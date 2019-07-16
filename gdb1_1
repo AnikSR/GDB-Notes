@@ -1,0 +1,107 @@
+GDB can be used to debug program written in C and C++. The purpose of a debugger such as GDB is to see what is going on "inside" another
+program while it executes or what another program is doing at the moment it crashed. GDB can do four main kind of things:
+
+#1. Start the program specifying anything that might affect its behavior.
+#2. Make the program stop on specified condition.
+#3. Examine what has happened, when the program has stopped.
+#4. Change things in your program, so experiment can be done with correcting the effect of one bug and go to learn about another. 
+
+
+#=============================#
+| Some common commands in GDB |
+#=============================#
+
+1. "$gdb" to invoke gdb.
+
+2. "(gdb) quit" or press ^D(ctrl+D) to quit gdb.
+
+3. "$gdb -silent" to start gdb without printing the front material.
+
+4. "$gdb <program>" to debug the executable <program>. The file <program> must be compiled with "-g" option to contain debugging symbols. As a
+   second argument process ID can be directly specified. like "$gdb <program> PID".
+
+5. "$gdb <program> <core>" for both executable and core file specified.
+
+6. "(gdb) gcore <program>" generates a core file for executable <program>. Before that can be done, the file must run.
+
+7. "$gdb --args <program>" to sent arguments to gdb.
+
+8. "$gdb -r <program>" to run the executable <program> inside gdb. This can also be done by starting <progam> with gdb and the giving the
+   instruction "run" or its short form "r".
+
+9. Inside gdb a breakpoint can be set on any function using "(gdb) break <function>". Short form "b" can also be used.
+   
+10. The command "n" or "next" advances execution to the next line of the current function.
+
+11. The command "s" or its long form "step" goes to the next line in any subroutine.
+
+12. "bt" or "backtrace" traces the overall position in the stack as a whole. "strace" similarly traces the current stack.
+
+13. "(gdb) info reg" will show the current values for all the CPU registers. Similarly "(gdb) info var" will show current value of all the
+    declared variables.
+
+14. "(gdb) p/FMT <variable>" to print value of a variable already encountered in debugging process. FMT stands for Format Data to Print. By
+    default the output will be in decimal. To get other formats following FMT values are to be used:
+					_________________________________ 	
+					|FMT value| Format				|
+					---------------------------------
+					|   d	  | Decimal(default).   |
+					---------------------------------
+					|   x	  | Hexadecimal.		|
+					---------------------------------
+					|   t     | Binary.				|
+					---------------------------------
+					|   u	  | Unsigned.			|
+					---------------------------------
+					|   f	  | Floating point.		|
+					---------------------------------
+					|   i	  | Instruction.		|
+					---------------------------------
+					|   c	  | Character.			|
+					---------------------------------
+					|   s	  | String.				|
+					---------------------------------
+					|   a	  | Address.			|
+					---------------------------------
+    The "print" command can also take type casts to identify variable types. For example:
+		
+		(gdb) p(char[14]) hello;	prints out "Hello, World!" stored in string variable 'hello'.
+		(gdb) p(long[10]) NumArr;	prints out an array of 10 long ints named NumArr.
+		(gdb) p(float) b;			prints out the value of a float variable 'b'.
+
+    Note: This is not print format like 'x' or 'u' in the table, this is type casting that identifies the type of the variable.
+
+15. "(gdb) x/NFS &<var>" is another option to examine memory and register. Here 'N' is the number of item to print, 'F' is the format used
+    with "p" command and 'S' is the size of each memory location. The size options are:
+					_________________________________ 	
+					|Option	|    Size	| Bytes		|
+					---------------------------------
+					|   b	|    Byte	|   1		|
+					---------------------------------
+					|   h	|  Halfword |   2		|
+					---------------------------------
+					|   w	|    Word	|   4		|
+					---------------------------------
+					|   g	|    Giant	|   8		|
+					---------------------------------
+					
+    "x" is actually short form of command "examine". Example: (gdb) x/fw &Percentage; prints a 4 byte float variable "Percentage"'s value.
+    Note: Say <var> has the value 0x002. Then in "(gdb) x &<var>" x will try to examine the adrress at 0x002 and if 0x002 is accessible then
+    print out whatever is there. This is why variables are presented to "x" with address of(&) operator. Similarly "(gdb) x $<reg>" will print
+	out the content of the memory address pointed to by <reg> register.
+
+16. "l" or "list" command prints lines from the source file: "(gdb) l <from>, <to>" will print from line <from> to the line <to>. Without any
+    argument, "list" will print 10 lines surrounding the current line.
+
+17. "(gdb) k" or "(gdb)kill" to kil the process right on.
+
+18. "c" or "continue" continues with execution of rest of the <program>. The program then can be closed using EOF if necessary.
+
+19. "(gdb) set width <size>" sets the number of character that will be displayed on a single line.
+
+20. "$gdb -help" shows all the command options with a short description of their function.
+
+
+* Stack frame display: Showing a summery of stack.
+** A program must be compiled with debugging symbol to run GDB on it. This can be done by compiling with "-g" command line option.
+   eg:	gcc -Wall -g listing.c -o listing
